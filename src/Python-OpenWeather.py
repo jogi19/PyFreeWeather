@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # OpenWeather using Python
 from __future__ import print_function
+from time import timezone
 """
 Usage: Python-OpenWeather.py
 Makes API calls to OpenWeather and retrievs JSON data
@@ -70,11 +71,11 @@ dt = float(dataJSON["dt"])
 # sys #
 sys_type = dataJSON['sys']['type']
 sys_id = dataJSON['sys']['id']
-sys_message = dataJSON['sys']['message']
+# sys_message = dataJSON['sys']['message'] //KeyError 'message'
 sys_country = dataJSON['sys']['country']
 sys_sunrise = dataJSON['sys']['sunrise']
 sys_sunset = dataJSON['sys']['sunset']
-#sys_timezone = dataJSON['sys']['timezone']
+sys_timezone = dataJSON['timezone']
 sys_id = dataJSON['sys']['id']
 #sys_name = dataJSON['sys']['name']
 #sys_cod = dataJSON['sys']['cod']
@@ -86,15 +87,18 @@ sys_id = dataJSON['sys']['id']
 # conn.commit()
 
 ##########################
+print(dataJSON)
 dt = float(dataJSON["dt"])
 dt_local = time.time()
 main = dataJSON
 temp = float(dataJSON['main']['temp']) - 273.0
 tempMax = float(dataJSON['main']['temp_max']) - 273.0
 tempMin = float(dataJSON['main']['temp_min']) - 273.0
+tempFeelsLike = float(dataJSON['main']['feels_like']) - 273.0
 humidity = int(dataJSON['main']['humidity'])
 pressure = int(dataJSON['main']['pressure'])
 wind = dataJSON['wind']
+name = dataJSON['name']
 windSpeed = float(dataJSON['wind']['speed'])
 windDeg = float(dataJSON['wind']['deg'])
 condition = dataJSON['weather'][0]['description']
@@ -103,11 +107,12 @@ print("")
 print("*******************")
 print("--Weather Summary--")
 print("*******************")
-print("")
+print("Name "+name)
 
-print("<b>dt</b> "+str(dt))
+print("dt "+str(dt))
 print("GMT "+ str(time.asctime(time.gmtime(dt))))
-print("LOCAL" + time.ctime(dt))
+print("Timezone "+str(timezone))
+print("LOCAL " + time.ctime(dt))
 print("CURRENT "+ time.ctime(dt_local))
 print("Sunrise GMT "+ str(time.asctime(time.gmtime(sys_sunrise))))
 print("Sunset GMT "+ str(time.asctime(time.gmtime(sys_sunset))))
@@ -115,6 +120,7 @@ print("Sunset GMT "+ str(time.asctime(time.gmtime(sys_sunset))))
 print("Current Temperature: %.2f C" % temp)
 print("Maximum Temperature: %.2f C" % tempMax)
 print("Minimum Temperature: %.2f C" % tempMin)
+print("Feels Like Temperatur: %.2f C" % tempFeelsLike)
 print("Pressure: %d hpa" % pressure)
 print("Humidity: %d %%" % humidity)
 if 'gust' in wind:
