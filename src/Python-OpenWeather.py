@@ -11,6 +11,8 @@ _______
 """
 
 import urllib
+import urllib.parse
+import urllib.request
 import json
 import codecs
 import gzip
@@ -29,11 +31,15 @@ if len(argv) > 1:
 locationID = 2911964
 apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'
 serviceUrl = "http://api.openweathermap.org/data/2.5/weather?"
-# url = serviceUrl + urllib.parse.urlencode({'id': locationID, 'APPID': apikey})
-# urlRead = urllib.request.urlopen(url).read()
-url = serviceUrl + urllib.urlencode({'id': locationID, 'APPID': apikey})
-urlRead = urllib.urlopen(url).read()
 
+#Python 3
+url = serviceUrl + urllib.parse.urlencode({'id': locationID, 'APPID': apikey})
+urlRead = urllib.request.urlopen(url).read()
+
+#Python 2
+#url = serviceUrl + urllib.urlencode({'id': locationID, 'APPID': apikey})
+#urlRead = urllib.urlopen(url).read()
+# API response info https://openweathermap.org/current
 dataJSON = json.loads(urlRead)
 
 # coord #
@@ -109,7 +115,7 @@ print("*******************")
 print("--Weather Summary--")
 print("*******************")
 print("Name "+name)
-
+print("base "+base)
 print("dt "+str(dt))
 print("GMT "+ str(time.asctime(time.gmtime(dt))))
 print("Timezone "+str(timezone))
