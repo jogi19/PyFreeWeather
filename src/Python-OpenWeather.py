@@ -20,14 +20,28 @@ import time
 import sqlite3
 #from urllib.parse import urlencode for Python3
 #import urllib.request for Python3
-
-
 from sys import argv, exit
 
 if len(argv) > 1:
     print(__doc__)
     exit(0)
 
+
+class OpenWeatherReceiver():
+    locationID = 2911964
+    apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'
+
+    """
+    This class needs to be implemented
+    """
+    def __init__(self, locationID = 2911964, apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'):
+        """
+        docstring
+        """
+        self.locationID = locationID
+        self.apikey = apikey
+
+    
 locationID = 2911964
 apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'
 serviceUrl = "http://api.openweathermap.org/data/2.5/weather?"
@@ -110,7 +124,7 @@ windDeg = float(dataJSON['wind']['deg'])
 condition = dataJSON['weather'][0]['description']
 clouds = int(dataJSON['clouds']['all'])
 visibility = int(dataJSON['visibility'])
-print("")
+print("urlRead "+ urlRead)
 print("*******************")
 print("--Weather Summary--")
 print("*******************")
