@@ -1,6 +1,9 @@
 #!/usr/bin/python
 # OpenWeather using Python
 from __future__ import print_function
+import urllib
+import urllib.parse
+import urllib.request
 from time import timezone
 """
 Usage: Python-OpenWeather.py
@@ -10,9 +13,7 @@ _______
 -h or help  Displays this message
 """
 
-import urllib
-import urllib.parse
-import urllib.request
+
 import json
 import codecs
 import gzip
@@ -34,7 +35,7 @@ class OpenWeatherReceiver():
     """
     This class needs to be implemented
     """
-    def __init__(self, locationID = 2911964, apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'):
+    def __init__(self, locationID, apikey):
         """
         docstring
         """
@@ -43,13 +44,15 @@ class OpenWeatherReceiver():
 
     def retrievWeatherData(self):
         self.serviceUrl = "http://api.openweathermap.org/data/2.5/weather?"
-        url = self.serviceUrl + urllib.parse.urlencode({'id': self.locationID, 'APPID': self.apikey})
+        url = self.serviceUrl + urllib.parse.urlencode(
+            {'id': self.locationID, 'APPID': self.apikey})
         urlRead = urllib.request.urlopen(url).read()
+        print(urlRead)
         dataJSON = json.loads(urlRead)
 
         # coord #
-        self.coord__lon = float(dataJSON['coord']['lon'])
-        self.coord__lon = float(dataJSON['coord']['lat'])
+        self.coord_lon = float(dataJSON['coord']['lon'])
+        self.coord_lat = float(dataJSON['coord']['lat'])
         # weaher
         self.weather_id = dataJSON['weather'][0]['id']
         self.weather_main = dataJSON['weather'][0]['main']
@@ -72,6 +75,8 @@ class OpenWeatherReceiver():
         self.wind_deg = float(dataJSON['wind']['deg'])
         if 'gust' in self.wind:
             self.wind_gust = float(dataJSON['wind']['gust'])
+        else:
+            self.wind_gust = None
 
         # clouds #
         self.clouds_all = dataJSON['clouds']['all']
@@ -91,12 +96,12 @@ class OpenWeatherReceiver():
         self.dt = float(dataJSON["dt"])
         self.dt_local = time.time()
         self.main = dataJSON
-        self.temp = float(dataJSON['main']['temp']) - 273.0
-        self.tempMax = float(dataJSON['main']['temp_max']) - 273.0
-        self.tempMin = float(dataJSON['main']['temp_min']) - 273.0
-        self.tempFeelsLike = float(dataJSON['main']['feels_like']) - 273.0
-        self.humidity = int(dataJSON['main']['humidity'])
-        self.pressure = int(dataJSON['main']['pressure'])
+        self.main_temp = float(dataJSON['main']['temp']) - 273.0
+        self.main_tempMax = float(dataJSON['main']['temp_max']) - 273.0
+        self.main_tempMin = float(dataJSON['main']['temp_min']) - 273.0
+        self.main_tempFeelsLike = float(dataJSON['main']['feels_like']) - 273.0
+        self.main_humidity = int(dataJSON['main']['humidity'])
+        self.main_pressure = int(dataJSON['main']['pressure'])
         self.wind = dataJSON['wind']
         self.name = dataJSON['name']
         self.windSpeed = float(dataJSON['wind']['speed'])
@@ -116,15 +121,17 @@ class OpenWeatherReceiver():
         print("Timezone "+str(self.sys_timezone))
         print("LOCAL " + time.ctime(self.dt))
         print("CURRENT "+ time.ctime(self.dt_local))
+        print("self.coord__lon: "+ (str(self.coord_lon)))
+        print("self.coord__lat: "+ (str(self.coord_lat)))
         print("Sunrise GMT "+ str(time.asctime(time.gmtime(self.sys_sunrise))))
         print("Sunset GMT "+ str(time.asctime(time.gmtime(self.sys_sunset))))
 
-        print("Current Temperature: %.2f C" % self.temp)
-        print("Maximum Temperature: %.2f C" % self.tempMax)
-        print("Minimum Temperature: %.2f C" % self.tempMin)
-        print("Feels Like Temperatur: %.2f C" % self.tempFeelsLike)
-        print("Pressure: %d hpa" % self.pressure)
-        print("Humidity: %d %%" % self.humidity)
+        print("Current Temperature: %.2f C" % self.main_temp)
+        print("Maximum Temperature: %.2f C" % self.main_tempMax)
+        print("Minimum Temperature: %.2f C" % self.main_tempMin)
+        print("Feels Like Temperatur: %.2f C" % self.main_tempFeelsLike)
+        print("Pressure: %d hpa" % self.main_pressure)
+        print("Humidity: %d %%" % self.main_humidity)
         if 'gust' in self.wind:
             self.windGust = float(dataJSON['wind']['gust'])
             print("Wind Gust:%s m/s" % self.windGust)
@@ -133,9 +140,67 @@ class OpenWeatherReceiver():
 
         print("Wind Speed: %.2f m/s " % self.windSpeed)
         print("Wind Deg: %.2f Degree" % self.windDeg)
+        print("Clouds All: %d %%" % self.clouds_all)
         print("Clouds: %d %%" % self.clouds)
         print("Condition: %s" % self.condition)
+        print("self.weather_main "+str(self.weather_main))
         print("visibility: %s m" % str(self.visibility))
+
+    '''
+    coord
+    '''
+    def get_coord_lon(self):
+        '''
+        City geo location, longitude
+        '''
+        return self.coord_lon
+
+    def get_coord_lat(self):
+        '''
+        City geo location, latitude
+        '''
+        return self.coord_lat
+
+    '''
+    weather
+    '''
+    def get_weather_id(self):
+        '''
+        Weather condition id
+        '''
+        return self.weather_id
+
+    def get_weather_main(self):
+        '''
+        Group of weather parameters (Rain, Snow, Extreme etc.)
+        '''
+        return self.weather_main
+
+    def get_weather_description(self):
+        '''
+        Weather condition within the group. You can get the output in your language.
+        '''
+        return self.weather_description
+
+    '''
+    base
+    '''
+    def get_base(self):
+        '''
+        Internal parameter
+        '''
+        return self.base
+
+    '''
+    main
+    '''
+    def get_main_temp(self):
+        '''
+        Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+        '''
+        return self.main_temp
+
+
 
 
 fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
