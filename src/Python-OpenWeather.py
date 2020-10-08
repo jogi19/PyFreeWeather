@@ -99,16 +99,21 @@ class OpenWeatherReceiver():
         self.main_temp = float(dataJSON['main']['temp']) - 273.0
         self.main_tempMax = float(dataJSON['main']['temp_max']) - 273.0
         self.main_tempMin = float(dataJSON['main']['temp_min']) - 273.0
-        self.main_tempFeelsLike = float(dataJSON['main']['feels_like']) - 273.0
+        self.main_temp_feels_like = float(dataJSON['main']['feels_like']) - 273.0
         self.main_humidity = int(dataJSON['main']['humidity'])
         self.main_pressure = int(dataJSON['main']['pressure'])
         self.wind = dataJSON['wind']
-        self.name = dataJSON['name']
+        if 'gust' in self.wind:
+            self.wind_gust = float(dataJSON['wind']['gust'])
+        else:
+            self.wind_gust = None
         self.windSpeed = float(dataJSON['wind']['speed'])
         self.windDeg = float(dataJSON['wind']['deg'])
         self.condition = dataJSON['weather'][0]['description']
         self.clouds = int(dataJSON['clouds']['all'])
         self.visibility = int(dataJSON['visibility'])
+
+        self.name = dataJSON['name']
 
     def printWeatherData(self):
         print("*******************")
@@ -121,23 +126,19 @@ class OpenWeatherReceiver():
         print("Timezone "+str(self.sys_timezone))
         print("LOCAL " + time.ctime(self.dt))
         print("CURRENT "+ time.ctime(self.dt_local))
-        print("self.coord__lon: "+ (str(self.coord_lon)))
-        print("self.coord__lat: "+ (str(self.coord_lat)))
+        print("self.coord_lon: "+ (str(self.coord_lon)))
+        print("self.coord_lat: "+ (str(self.coord_lat)))
         print("Sunrise GMT "+ str(time.asctime(time.gmtime(self.sys_sunrise))))
         print("Sunset GMT "+ str(time.asctime(time.gmtime(self.sys_sunset))))
 
         print("Current Temperature: %.2f C" % self.main_temp)
         print("Maximum Temperature: %.2f C" % self.main_tempMax)
         print("Minimum Temperature: %.2f C" % self.main_tempMin)
-        print("Feels Like Temperatur: %.2f C" % self.main_tempFeelsLike)
+        print("Feels Like Temperatur: %.2f C" % self.main_temp_feels_like)
         print("Pressure: %d hpa" % self.main_pressure)
         print("Humidity: %d %%" % self.main_humidity)
-        if 'gust' in self.wind:
-            self.windGust = float(dataJSON['wind']['gust'])
-            print("Wind Gust:%s m/s" % self.windGust)
-        else:
-            print("Wind Gust: Data not available")
-
+        print("Wind Gust:%s m/s" % self.wind_gust)
+        
         print("Wind Speed: %.2f m/s " % self.windSpeed)
         print("Wind Deg: %.2f Degree" % self.windDeg)
         print("Clouds All: %d %%" % self.clouds_all)
@@ -183,7 +184,7 @@ class OpenWeatherReceiver():
         return self.weather_description
 
     '''
-    base
+    base    
     '''
     def get_base(self):
         '''
@@ -196,9 +197,68 @@ class OpenWeatherReceiver():
     '''
     def get_main_temp(self):
         '''
-        Temperature. Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+        Temperature. Unit Default: Kelvin, Metric: Celsius,
+        Imperial: Fahrenheit.
         '''
         return self.main_temp
+
+    def get_main_feels_like(self):
+        '''
+        Temperature. This temperature parameter accounts
+        for the human perception of weather. 
+        Unit Default: 
+        Kelvin, Metric: Celsius, Imperial: Fahrenheit. 
+        '''
+        return self.main_temp_feels_like
+
+    def get_main_pressure(self):
+        '''
+        Atmospheric pressure (on the sea level, if there is no sea_level or grnd_level data), hPa
+        '''
+        return self.main_pressure
+
+    def get_humidity(self):
+        '''
+        Humidity, %
+        '''
+        return self.main_humidity
+
+    def get_temp_min(self):
+        '''
+        Minimum temperature at the moment.
+        This is minimal currently observed temperature
+        (within large megalopolises and urban areas).
+        Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+        '''
+        return self.main_temp_min
+
+    def get_main_temp_max(self):
+        '''
+        Maximum temperature at the moment.
+        This is maximal currently observed temperature
+        (within large megalopolises and urban areas).
+        Unit Default: Kelvin, Metric: Celsius, Imperial: Fahrenheit.
+        '''
+        return self.main_temp_max
+
+    def get_main_sea_level(self):
+        '''
+        Atmospheric pressure on the sea level, hPa
+        NOT IMPLEMENTED
+        '''
+        return None
+
+    def get_main_grnd_level(self):
+        '''
+        Atmospheric pressure on the ground level, hPa
+        NOT IMPLEMENTED
+        '''
+        return None
+
+    '''
+    wind
+    '''
+
 
 
 
