@@ -94,7 +94,7 @@ class OpenWeatherReceiver():
         self.sys_timezone = dataJSON['timezone']
 
         self.dt = float(dataJSON["dt"])
-        self.dt_local = time.time()
+        self.dt_current = time.time()
         self.main = dataJSON
         self.main_temp = float(dataJSON['main']['temp']) - 273.0
         self.main_tempMax = float(dataJSON['main']['temp_max']) - 273.0
@@ -107,8 +107,8 @@ class OpenWeatherReceiver():
             self.wind_gust = float(dataJSON['wind']['gust'])
         else:
             self.wind_gust = None
-        self.windSpeed = float(dataJSON['wind']['speed'])
-        self.windDeg = float(dataJSON['wind']['deg'])
+        #self.windSpeed = float(dataJSON['wind']['speed'])
+        #self.windDeg = float(dataJSON['wind']['deg'])
         self.condition = dataJSON['weather'][0]['description']
         self.clouds = int(dataJSON['clouds']['all'])
         self.visibility = int(dataJSON['visibility'])
@@ -125,7 +125,7 @@ class OpenWeatherReceiver():
         print("GMT "+ str(time.asctime(time.gmtime(self.dt))))
         print("Timezone "+str(self.sys_timezone))
         print("LOCAL " + time.ctime(self.dt))
-        print("CURRENT "+ time.ctime(self.dt_local))
+        print("CURRENT "+ time.ctime(self.dt_current))
         print("self.coord_lon: "+ (str(self.coord_lon)))
         print("self.coord_lat: "+ (str(self.coord_lat)))
         print("Sunrise GMT "+ str(time.asctime(time.gmtime(self.sys_sunrise))))
@@ -139,8 +139,8 @@ class OpenWeatherReceiver():
         print("Humidity: %d %%" % self.main_humidity)
         print("Wind Gust:%s m/s" % self.wind_gust)
         
-        print("Wind Speed: %.2f m/s " % self.windSpeed)
-        print("Wind Deg: %.2f Degree" % self.windDeg)
+        print("Wind Speed: %.2f m/s " % self.wind_speed)
+        print("Wind Deg: %.2f Degree" % self.wind_deg)
         print("Clouds All: %d %%" % self.clouds_all)
         print("Clouds: %d %%" % self.clouds)
         print("Condition: %s" % self.condition)
@@ -258,6 +258,53 @@ class OpenWeatherReceiver():
     '''
     wind
     '''
+
+    def get_wind_speed(self):
+        '''
+         Wind speed. Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+        '''
+        return self.wind_speed
+
+    def get_wind_deg(self):
+        '''
+        Wind direction, degrees (meteorological)
+        '''
+        return self.wind_deg
+
+    def get_wind_dust(self):
+        '''
+        Wind gust. Unit Default: meter/sec, Metric: meter/sec, Imperial: 
+        '''
+        return self.wind_gust
+
+    '''
+    clouds
+    '''
+    def get_clouds_all(self):
+        '''
+        Cloudiness, %
+        '''
+        return self.clouds_all
+
+    '''
+    dt
+    '''
+    def get_dt(self):
+        '''
+        Time of data calculation, unix, UTC 
+        '''
+        return self.dt
+
+    '''
+    df current 
+    '''
+    def get_dt_current(self):
+        '''
+        Time of data retrieving, unit, UTC
+        '''
+        return self.dt_current
+
+
 
 
 
