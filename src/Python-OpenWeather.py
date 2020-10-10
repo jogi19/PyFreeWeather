@@ -91,7 +91,7 @@ class OpenWeatherReceiver():
         self.sys_country = dataJSON['sys']['country']
         self.sys_sunrise = dataJSON['sys']['sunrise']
         self.sys_sunset = dataJSON['sys']['sunset']
-        self.sys_timezone = dataJSON['timezone']
+        self.timezone = dataJSON['timezone']
 
         self.dt = float(dataJSON["dt"])
         self.dt_current = time.time()
@@ -102,18 +102,13 @@ class OpenWeatherReceiver():
         self.main_temp_feels_like = float(dataJSON['main']['feels_like']) - 273.0
         self.main_humidity = int(dataJSON['main']['humidity'])
         self.main_pressure = int(dataJSON['main']['pressure'])
-        self.wind = dataJSON['wind']
-        if 'gust' in self.wind:
-            self.wind_gust = float(dataJSON['wind']['gust'])
-        else:
-            self.wind_gust = None
-        #self.windSpeed = float(dataJSON['wind']['speed'])
-        #self.windDeg = float(dataJSON['wind']['deg'])
+
         self.condition = dataJSON['weather'][0]['description']
         self.clouds = int(dataJSON['clouds']['all'])
         self.visibility = int(dataJSON['visibility'])
-
+        self.id = dataJSON['id']
         self.name = dataJSON['name']
+        #self.code = dataJSON['code']
 
     def printWeatherData(self):
         print("*******************")
@@ -123,7 +118,7 @@ class OpenWeatherReceiver():
         print("base "+self.base)
         print("dt "+str(self.dt))
         print("GMT "+ str(time.asctime(time.gmtime(self.dt))))
-        print("Timezone "+str(self.sys_timezone))
+        print("Timezone "+str(self.timezone))
         print("LOCAL " + time.ctime(self.dt))
         print("CURRENT "+ time.ctime(self.dt_current))
         print("self.coord_lon: "+ (str(self.coord_lon)))
@@ -304,9 +299,82 @@ class OpenWeatherReceiver():
         '''
         return self.dt_current
 
+    '''
+    sys
+    '''
+    def get_sys_type(self):
+        '''
+        Internal parameter
+        '''
+        return self.sys_type
 
+    def get_sys_id(self):
+        '''
+        Internal parameter
+        '''
+        return self.sys_id
 
+    def get_sys_message(self):
+        '''
+        Internal parameter
+        NOT IMPLEMENTED
+        '''
+        return None
 
+    def get_sys_country(self):
+        '''
+        Country code (GB, JP etc.)
+        '''
+        return self.sys_country
+
+    def get_sys_sunrise(self):
+        '''
+        Sunrise time, unix, UTC
+        '''
+        return self.sys_sunrise
+
+    def get_sys_sunset(self):
+        '''
+        Sunset time, unix, UTC
+        '''
+        return self.sys_sunset
+
+    '''
+    timezone
+    '''
+    def get_timezone(self):
+        '''
+        Shift in seconds from UTC 
+        '''
+        return self.timezone
+
+    '''
+    id
+    '''
+    def get_id(self):
+        '''
+        City ID
+        '''
+        return self.id
+
+    '''
+    name
+    '''
+    def get_name(self):
+        '''
+        City name 
+        '''
+        return self.name
+
+    '''
+    cod
+    '''
+    def get_code(self):
+        '''
+            Internal parameter
+            NOT IMPLEMENTED
+        '''
+        return None
 
 
 
