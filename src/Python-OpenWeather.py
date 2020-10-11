@@ -103,7 +103,7 @@ class OpenWeatherReceiver():
         self.main_humidity = int(dataJSON['main']['humidity'])
         self.main_pressure = int(dataJSON['main']['pressure'])
 
-        self.condition = dataJSON['weather'][0]['description']
+        self.weather_description = dataJSON['weather'][0]['description']
         self.clouds = int(dataJSON['clouds']['all'])
         self.visibility = int(dataJSON['visibility'])
         self.id = dataJSON['id']
@@ -114,33 +114,33 @@ class OpenWeatherReceiver():
         print("*******************")
         print("--Weather Summary--")
         print("*******************")
-        print("Name "+self.name)
-        print("base "+self.base)
-        print("dt "+str(self.dt))
-        print("GMT "+ str(time.asctime(time.gmtime(self.dt))))
-        print("Timezone "+str(self.timezone))
-        print("LOCAL " + time.ctime(self.dt))
-        print("CURRENT "+ time.ctime(self.dt_current))
-        print("self.coord_lon: "+ (str(self.coord_lon)))
-        print("self.coord_lat: "+ (str(self.coord_lat)))
-        print("Sunrise GMT "+ str(time.asctime(time.gmtime(self.sys_sunrise))))
-        print("Sunset GMT "+ str(time.asctime(time.gmtime(self.sys_sunset))))
+        print("Name "+self.get_name())
+        print("base "+self.get_base())
+        print("dt "+str(self.get_dt()))
+        print("GMT "+ str(time.asctime(time.gmtime(self.get_dt()))))
+        print("Timezone "+str(self.get_timezone()))
+        print("LOCAL " + time.ctime(self.get_dt()))
+        print("CURRENT "+ time.ctime(self.get_dt_current()))
+        print("self.coord_lon: "+ (str(self.get_coord_lon())))
+        print("self.coord_lat: "+ (str(self.get_coord_lat())))
+        print("Sunrise GMT "+ str(time.asctime(time.gmtime(self.get_sys_sunrise()))))
+        print("Sunset GMT "+ str(time.asctime(time.gmtime(self.get_sys_sunset()))))
 
-        print("Current Temperature: %.2f C" % self.main_temp)
-        print("Maximum Temperature: %.2f C" % self.main_tempMax)
-        print("Minimum Temperature: %.2f C" % self.main_tempMin)
-        print("Feels Like Temperatur: %.2f C" % self.main_temp_feels_like)
-        print("Pressure: %d hpa" % self.main_pressure)
-        print("Humidity: %d %%" % self.main_humidity)
-        print("Wind Gust:%s m/s" % self.wind_gust)
+        print("Current Temperature: %.2f C" % self.get_main_temp())
+        print("Maximum Temperature: %.2f C" % self.get_main_temp_max())
+        print("Minimum Temperature: %.2f C" % self.get_main_temp_min())
+        print("Feels Like Temperatur: %.2f C" % self.get_main_temp_feels_like())
+        print("Pressure: %d hpa" % self.get_main_pressure())
+        print("Humidity: %d %%" % self.get_main_humidity())
+        print("Wind Gust:%s m/s" % self.get_wind_gust())
         
-        print("Wind Speed: %.2f m/s " % self.wind_speed)
-        print("Wind Deg: %.2f Degree" % self.wind_deg)
-        print("Clouds All: %d %%" % self.clouds_all)
-        print("Clouds: %d %%" % self.clouds)
-        print("Condition: %s" % self.condition)
-        print("self.weather_main "+str(self.weather_main))
-        print("visibility: %s m" % str(self.visibility))
+        print("Wind Speed: %.2f m/s " % self.get_wind_speed())
+        print("Wind Deg: %.2f Degree" % self.get_wind_deg())
+        print("Clouds All: %d %%" % self.get_clouds_all())
+        print("Clouds: %d %%" % self.get_clouds_all())
+        print("weather_description: %s" % self.get_weather_description())
+        print("self.weather_main "+str(self.get_weather_main))
+        print("visibility: %s m" % str(self.get_visibility()))
 
     '''
     coord
@@ -197,7 +197,7 @@ class OpenWeatherReceiver():
         '''
         return self.main_temp
 
-    def get_main_feels_like(self):
+    def get_main_temp_feels_like(self):
         '''
         Temperature. This temperature parameter accounts
         for the human perception of weather. 
@@ -212,13 +212,13 @@ class OpenWeatherReceiver():
         '''
         return self.main_pressure
 
-    def get_humidity(self):
+    def get_main_humidity(self):
         '''
         Humidity, %
         '''
         return self.main_humidity
 
-    def get_temp_min(self):
+    def get_main_temp_min(self):
         '''
         Minimum temperature at the moment.
         This is minimal currently observed temperature
@@ -266,7 +266,7 @@ class OpenWeatherReceiver():
         '''
         return self.wind_deg
 
-    def get_wind_dust(self):
+    def get_wind_gust(self):
         '''
         Wind gust. Unit Default: meter/sec, Metric: meter/sec, Imperial: 
         '''
@@ -281,6 +281,14 @@ class OpenWeatherReceiver():
         '''
         return self.clouds_all
 
+    '''
+    visibility
+    '''
+    def get_visibility(self):
+        '''
+        Visibility, meter
+        '''
+        return self.visibility
     '''
     dt
     '''
