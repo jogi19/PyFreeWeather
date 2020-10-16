@@ -29,11 +29,9 @@ if len(argv) > 1:
 
 
 class OpenWeatherReceiver():
-    locationID = 2911964
-    apikey = '4018963b8a12ea4aafa4b61cebcb9f8a'
-
+    
     """
-    This class needs to be implemented
+    TODO Decription of class
     """
     def __init__(self, locationID, apikey):
         """
@@ -377,7 +375,12 @@ class OpenWeatherReceiver():
         '''
         return None
 
-
+if len(argv) > 1:
+    print(__doc__)
+    exit(0)
+# TODO implemt handoover of locationID, apikey
+# and remove if from code
+    
 fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
 fw.retrievWeatherData()
 fw.printWeatherData()
