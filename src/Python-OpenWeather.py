@@ -95,7 +95,8 @@ class OpenWeatherReceiver():
 
         self.dt = float(dataJSON["dt"])
         self.dt_current = time.time()
-        self.main = dataJSON
+        #self.main = dataJSON //is this need ?
+        #TODO store temp in Celvin not Celcius
         self.main_temp = float(dataJSON['main']['temp']) - 273.0
         self.main_tempMax = float(dataJSON['main']['temp_max']) - 273.0
         self.main_tempMin = float(dataJSON['main']['temp_min']) - 273.0
@@ -375,7 +376,6 @@ class OpenWeatherReceiver():
             NOT IMPLEMENTED
         '''
         return None
-
 
 
 fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
