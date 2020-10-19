@@ -15,12 +15,9 @@ _______
 
 
 import json
-import codecs
-import gzip
 import time
-import sqlite3
-#from urllib.parse import urlencode for Python3
-#import urllib.request for Python3
+import mysql.connector
+import datetime
 from sys import argv, exit
 
 if len(argv) > 1:
@@ -74,7 +71,7 @@ class OpenWeatherReceiver():
         if 'gust' in self.wind:
             self.wind_gust = float(dataJSON['wind']['gust'])
         else:
-            self.wind_gust = None
+            self.wind_gust = self.wind_speed
 
         # clouds #
         self.clouds_all = dataJSON['clouds']['all']
@@ -95,10 +92,10 @@ class OpenWeatherReceiver():
         self.dt_current = time.time()
         #self.main = dataJSON //is this need ?
         #TODO store temp in Celvin not Celcius
-        self.main_temp = float(dataJSON['main']['temp']) - 273.0
-        self.main_tempMax = float(dataJSON['main']['temp_max']) - 273.0
-        self.main_tempMin = float(dataJSON['main']['temp_min']) - 273.0
-        self.main_temp_feels_like = float(dataJSON['main']['feels_like']) - 273.0
+        self.main_temp = float(dataJSON['main']['temp'])
+        self.main_tempMax = float(dataJSON['main']['temp_max'])
+        self.main_tempMin = float(dataJSON['main']['temp_min'])
+        self.main_temp_feels_like = float(dataJSON['main']['feels_like'])
         self.main_humidity = int(dataJSON['main']['humidity'])
         self.main_pressure = int(dataJSON['main']['pressure'])
 
@@ -116,9 +113,13 @@ class OpenWeatherReceiver():
         print("Name "+self.get_name())
         print("base "+self.get_base())
         print("dt "+str(self.get_dt()))
-        print("GMT "+ str(time.asctime(time.gmtime(self.get_dt()))))
+        #time_string = str(time.asctime(time.gmtime(self.get_dt())))
+        timestamp = datetime.datetime.fromtimestamp(self.get_dt()).strftime('%Y-%m-%d %H:%M:%S')
+        time_string = str(time.gmtime(self.get_dt()))
+        print("GMT "+ timestamp)
+
         print("Timezone "+str(self.get_timezone()))
-        #print("LOCAL " + time.ctime(self.get_dt()))
+        print("LOCAL " + time.ctime(self.get_dt()))
         print("LOCAL " + str(time.asctime(time.gmtime(self.get_dt()+self.get_timezone()))))
         print("CURRENT "+ time.ctime(self.get_dt_current()))
         print("self.coord_lon: "+ (str(self.get_coord_lon())))
@@ -139,9 +140,73 @@ class OpenWeatherReceiver():
         print("Clouds All: %d %%" % self.get_clouds_all())
         print("Clouds: %d %%" % self.get_clouds_all())
         print("weather_description: %s" % self.get_weather_description())
-        print("self.weather_main "+str(self.get_weather_main))
+        print("self.weather_main "+str(self.get_weather_main()))
         print("visibility: %s m" % str(self.get_visibility()))
 
+    def insert_weather_data(self, database, table):
+        mydb = mysql.connector.connect(
+          host="localhost",
+          user="weatherfrog",
+          password="forecast"
+        )
+        mydb.database = database
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO " +table+ "(\
+        time,\
+        local_time,\
+        timezone,\
+        sys_sunrise,\
+        sys_sunset,\
+        coord_lon,\
+        coord_lat,\
+        weather_id,\
+        weather_main,\
+        weather_description,\
+        base,\
+        wind_speed,\
+        wind_deg,\
+        wind_gust,\
+        sys_type,\
+        main_temp_max,\
+        main_temp_min,\
+        main_temp_feels_like,\
+        main_humidity,\
+        main_pressure,\
+        clouds_all,\
+        visibility,\
+        id,\
+        name)\
+         VALUES \
+        ( \
+        \'"+str(datetime.datetime.fromtimestamp(self.get_dt()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        \'"+str(datetime.datetime.fromtimestamp(self.get_dt()+self.get_timezone()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        "+str(self.get_timezone())+",\
+        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunrise()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunset()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        "+str(self.get_coord_lon())+",\
+        "+str(self.get_coord_lat())+",\
+        "+str(self.get_weather_id())+",\
+        \'"+str(self.get_weather_main())+"\',\
+        \'"+self.get_weather_description()+"\',\
+        \'"+str(self.get_base())+"\',\
+        "+str(self.get_wind_speed())+",\
+        "+str(self.get_wind_deg())+",\
+        "+str(self.get_wind_gust())+",\
+        "+str(self.get_sys_type())+",\
+        "+str(self.get_main_temp_max())+",\
+        "+str(self.get_main_temp_min())+",\
+        "+str(self.get_main_temp_feels_like())+",\
+        "+str(self.get_main_humidity())+",\
+        "+str(self.get_main_pressure())+",\
+        "+str(self.get_clouds_all())+",\
+        "+str(self.get_visibility())+",\
+        "+str(self.get_id())+",\
+        \'"+self.get_name()+"\');"
+        print(sql)
+        mycursor.execute(sql)
+        mydb.commit()
+
+        
     '''
     coord
     '''
@@ -393,3 +458,5 @@ if len(argv) > 1:
 fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
 fw.retrievWeatherData()
 fw.printWeatherData()
+
+fw.insert_weather_data("weather_db","weather_test4")
