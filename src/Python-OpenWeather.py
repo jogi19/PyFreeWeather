@@ -18,6 +18,7 @@ import json
 import time
 import mysql.connector
 import datetime
+import pytz
 from sys import argv, exit
 
 if len(argv) > 1:
@@ -167,6 +168,7 @@ class OpenWeatherReceiver():
         wind_deg,\
         wind_gust,\
         sys_type,\
+        main_temp,\
         main_temp_max,\
         main_temp_min,\
         main_temp_feels_like,\
@@ -178,11 +180,11 @@ class OpenWeatherReceiver():
         name)\
          VALUES \
         ( \
+        \'"+str(datetime.datetime.fromtimestamp(self.get_dt(),tz=pytz.utc).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
         \'"+str(datetime.datetime.fromtimestamp(self.get_dt()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
-        \'"+str(datetime.datetime.fromtimestamp(self.get_dt()+self.get_timezone()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
         "+str(self.get_timezone())+",\
-        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunrise()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
-        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunset()).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunrise(),tz=pytz.utc).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
+        \'"+str(datetime.datetime.fromtimestamp(self.get_sys_sunset(),tz=pytz.utc).strftime('%Y-%m-%d %H:%M:%S'))+"\',\
         "+str(self.get_coord_lon())+",\
         "+str(self.get_coord_lat())+",\
         "+str(self.get_weather_id())+",\
@@ -193,6 +195,7 @@ class OpenWeatherReceiver():
         "+str(self.get_wind_deg())+",\
         "+str(self.get_wind_gust())+",\
         "+str(self.get_sys_type())+",\
+        "+str(self.get_main_temp())+",\
         "+str(self.get_main_temp_max())+",\
         "+str(self.get_main_temp_min())+",\
         "+str(self.get_main_temp_feels_like())+",\
@@ -459,4 +462,4 @@ fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
 fw.retrievWeatherData()
 fw.printWeatherData()
 
-fw.insert_weather_data("weather_db","weather_test4")
+fw.insert_weather_data("weather_db","weather_test5")

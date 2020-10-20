@@ -33,6 +33,7 @@ def create_weather_table(database, table):
     wind_deg FLOAT,\
     wind_gust FLOAT,\
     sys_type INT,\
+    main_temp FLOAT,\
     main_temp_max FLOAT,\
     main_temp_min FLOAT,\
     main_temp_feels_like FLOAT,\
@@ -60,5 +61,5 @@ mydb = mysql.connector.connect(
 mycursor = mydb.cursor()
 #mycursor.execute("CREATE DATABASE mydatabase")
 show_databases()
-create_weather_table("weather_db","weather_test4")
+create_weather_table("weather_db","weather_test5")
 
