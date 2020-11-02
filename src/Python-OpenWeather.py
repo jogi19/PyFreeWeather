@@ -21,10 +21,6 @@ import datetime
 import pytz
 from sys import argv, exit
 
-if len(argv) > 1:
-    print(__doc__)
-    exit(0)
-
 
 class OpenWeatherReceiver():
     
@@ -452,13 +448,16 @@ class OpenWeatherReceiver():
         '''
         return None
 
-if len(argv) > 1:
-    print(__doc__)
-    exit(0)
+#if len(argv) < 1:
+#    exit()
+
 # TODO implemt handoover of locationID, apikey
 # and remove if from code
-    
-fw = OpenWeatherReceiver(2911964, '4018963b8a12ea4aafa4b61cebcb9f8a')
+locationID=int(argv[1])
+print(locationID)
+apikey=str(argv[2])
+print(apikey)
+fw = OpenWeatherReceiver(locationID, apikey)
 fw.retrievWeatherData()
 fw.printWeatherData()
 
