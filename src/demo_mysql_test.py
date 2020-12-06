@@ -1,5 +1,9 @@
 '''
 source: https://www.w3schools.com/python/python_mysql_getstarted.asp
+This code was just to leran how to handle SQL data base with python
+and helped me to create the required databases and tables
+I'm not sure if this version creates the correct databases
+So, if you find issues, don't hessitate to push fixes :-)
 '''
 
 import mysql.connector
