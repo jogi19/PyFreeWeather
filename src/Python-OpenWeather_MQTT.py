@@ -456,6 +456,8 @@ class OpenWeatherReceiver():
         time.sleep(1)
         client.publish("WEATHERSTATION/HAIGER/TEMPERATUR/MAIN/",self.get_main_temp())
         time.sleep(1)
+        client.publish("WEATHERSTATION/HAIGER/TEMPERATUR/MAX/",self.get_main_temp_max())
+        client.publish("WEATHERSTATION/HAIGER/TEMPERATUR/MIN/",self.get_main_temp_min())
         client.publish("WEATHERSTATION/HAIGER/WIND/DIRECTION/",self.get_wind_deg())
         client.publish("WEATHERSTATION/HAIGER/WIND/SPEED/",self.get_wind_speed())
         client.publish("WEATHERSTATION/HAIGER/WIND/GUST/",self.get_wind_gust())
